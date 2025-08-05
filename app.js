@@ -8,6 +8,31 @@ const ejsMate = require("ejs-mate");
 const ExpressError=require("./utils/ExpressError")
 const listings = require("./routes/listing");
 const reviews = require("./routes/review");
+const cookieparser = require("cookie-parser");
+const session = require("express-session");
+const flash = require("connect-flash");
+
+
+const sessionOptions = {
+  secret:"mysupersecret",
+  resave:false,
+  saveUninitialized:true,
+  cookies:{
+    expire:Date.now() * 7 * 24 * 60 * 60 * 1000,
+    maxAge:7 * 24 * 60 * 60 * 1000,
+    httpOnly:true,
+  }
+}
+
+// Root route
+app.get("/", (req, res) => {
+  res.send("root is working");
+});
+
+
+
+app.use(session(sessionOptions));
+app.use(flash());
 
 // MongoDB connection URL
 const mongoose_url = "mongodb://127.0.0.1:27017/wanderlust";
@@ -31,14 +56,16 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Middleware
+app.use(cookieparser("secretcode"));
 app.use(express.urlencoded({ extended: true })); // Parse form data
 app.use(methodOverride("_method"));              // Support PUT/DELETE via query param
 app.use(express.static(path.join(__dirname, "public"))); // Serve static assets
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+})
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("root is working");
-});
 
 app.use("/listings",listings);
 app.use("/listings/:id/reviews",reviews);
