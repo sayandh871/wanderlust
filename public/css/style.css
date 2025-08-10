@@ -21,8 +21,19 @@ body {
    Navbar
 ================================= */
 .navbar {
-    height: 5rem;
+    min-height: 5rem;
 }
+@media (max-width: 992px) { /* Applies when collapsed */
+  .navbar-nav {
+    text-align: center;
+    width: 100%;
+  }
+  .navbar-nav .nav-link {
+    padding: 10px 0; /* Space between items */
+  }
+}
+
+
 
 .fa-compass {
     background-color: #fe424d;
