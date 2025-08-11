@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const ExpressError=require("./utils/ExpressError")
+const ExpressError = require("./utils/ExpressError");
 const listingRouter = require("./routes/listing");
 const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
@@ -16,33 +16,33 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 
-
+// Session configuration options
 const sessionOptions = {
-  secret:"mysupersecret",
-  resave:false,
-  saveUninitialized:true,
-  cookies:{
-    expire:Date.now() * 7 * 24 * 60 * 60 * 1000,
-    maxAge:7 * 24 * 60 * 60 * 1000,
-    httpOnly:true,
+  secret: "mysupersecret", // Secret for signing the session ID cookie
+  resave: false,           // Do not save session if unmodified
+  saveUninitialized: true, // Save new sessions even if they are not modified
+  cookies: {               // Cookie settings
+    expire: Date.now() * 7 * 24 * 60 * 60 * 1000, // Expiration time
+    maxAge: 7 * 24 * 60 * 60 * 1000,              // Max age in ms (7 days)
+    httpOnly: true                                // Cookie not accessible via JavaScript
   }
-}
+};
 
 // Root route
 app.get("/", (req, res) => {
   res.send("root is working");
 });
 
-
-
+// Session and flash middleware
 app.use(session(sessionOptions));
 app.use(flash());
 
+// Passport authentication setup
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(new LocalStrategy(User.authenticate())); // Using local strategy
+passport.serializeUser(User.serializeUser());         // Store user in session
+passport.deserializeUser(User.deserializeUser());     // Retrieve user from session
 
 // MongoDB connection URL
 const mongoose_url = "mongodb://127.0.0.1:27017/wanderlust";
@@ -65,31 +65,36 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// Middleware
-app.use(cookieparser("secretcode"));
-app.use(express.urlencoded({ extended: true })); // Parse form data
-app.use(methodOverride("_method"));              // Support PUT/DELETE via query param
-app.use(express.static(path.join(__dirname, "public"))); // Serve static assets
+// Middleware setup
+app.use(cookieparser("secretcode"));                     // Parse cookies
+app.use(express.urlencoded({ extended: true }));         // Parse URL-encoded form data
+app.use(methodOverride("_method"));                      // Support PUT/DELETE from forms
+app.use(express.static(path.join(__dirname, "public"))); // Serve static files
+
+// Custom middleware to make flash messages & user data available in views
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
+  res.locals.currUser = req.user;           // Store current user
+  res.locals.redirecturl = req.originalUrl; // Store original requested URL
   next();
-})
-
-
-app.use("/listings",listingRouter);
-app.use("/listings/:id/reviews",reviewRouter);
-app.use("/",userRouter);
-
-app.all(/.*/,(req,res,next)=>{
-  next(new ExpressError(404,"page not found"));
 });
 
-app.use((err,req,res,next)=>{
-  let {statusCode=500,message="something went wrong"}=err;
-  res.status(statusCode).render("error.ejs",{message});
-})
+// Routes
+app.use("/listings", listingRouter);
+app.use("/listings/:id/reviews", reviewRouter);
+app.use("/", userRouter);
+
+// Handle all unmatched routes
+app.all(/.*/, (req, res, next) => {
+  next(new ExpressError(404, "page not found"));
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  let { statusCode = 500, message = "something went wrong" } = err;
+  res.status(statusCode).render("error.ejs", { message });
+});
 
 // Start the server
 app.listen(8080, () => {

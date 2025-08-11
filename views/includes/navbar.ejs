@@ -25,25 +25,30 @@
     <!-- Collapsible navbar content -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
-      <!-- Navigation links container -->
+      <!-- Navigation links (left side) -->
       <div class="navbar-nav">
         <!-- Home link -->
         <a class="nav-link active" href="/">Home</a>
 
         <!-- All listings link -->
-        <a class="nav-link" href="/listings">All listings</a>
+        <a class="nav-link" href="/listings">All Listings</a>
 
         <!-- Add new listings link -->
-        <a class="nav-link" href="listings/new">Add new listings</a>
+        <a class="nav-link" href="/listings/new">Add New Listing</a>
       </div>
+
+      <!-- User auth links (right side) -->
       <div class="navbar-nav ms-auto">
-         <% if(!currUser) { %>
-          <a class="nav-link active" href="/signup">Sign up</a>
-          <a class="nav-link active" href="/login">Log in</a>
-         <%}%>
-        <%if(currUser){%>
-        <a class="nav-link active" href="/logout">Log out</a>
-        <%}%>
+        <% if (!currUser) { %>
+          <!-- Show Sign up and Log in when user is not logged in -->
+          <a class="nav-link active" href="/signup">Sign Up</a>
+          <a class="nav-link active" href="/login">Log In</a>
+        <% } %>
+
+        <% if (currUser) { %>
+          <!-- Show Log out when user is logged in -->
+          <a class="nav-link active" href="/logout">Log Out</a>
+        <% } %>
       </div>
 
     </div>
