@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 const Review = require("./review");
+const { string } = require("joi");
 
 // Define the schema for a listing
 const listingschema = new schema({
@@ -9,7 +10,10 @@ const listingschema = new schema({
         required: true // Title is mandatory
     },
     description: String, // Optional description of the listing
-    image: String,       // Image URL or path
+    image: {
+        url:String,
+        filename:String,
+    },       // Image URL or path
     price: Number,       // Price of the listing
     location: String,    // Location (city, area, etc.)
     country: String,     // Country name
