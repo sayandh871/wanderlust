@@ -1,3 +1,25 @@
+<style>
+  .search-btn{
+    background-color: #fe424d;
+    color: #fff;
+    border-radius: 1.4rem;
+    padding: 0 1rem 0 1rem;
+  }
+  .search-btn:hover{
+    background-color: #fe424d;
+    color: #fff;
+  }
+  .search-btn i {
+    display: inline;
+    margin-right: .5rem;
+  }
+  .search-input{
+    border-radius: 1.4rem;
+    padding: .5rem 5rem .5rem 5rem;
+  }
+</style>
+
+
 <!-- Bootstrap Navbar -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom sticky-top">
   
@@ -5,7 +27,7 @@
   <div class="container-fluid">
 
     <!-- Brand icon linking to homepage -->
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="/listings">
       <i class="fa-sharp fa-regular fa-compass"></i>
     </a>
 
@@ -27,22 +49,27 @@
 
       <!-- Navigation links (left side) -->
       <div class="navbar-nav">
-        <!-- Home link -->
-        <a class="nav-link active" href="/">Home</a>
 
         <!-- All listings link -->
-        <a class="nav-link" href="/listings">All Listings</a>
+        <a class="nav-link" href="/listings">Explore</a>
 
         <!-- Add new listings link -->
-        <a class="nav-link" href="/listings/new">Add New Listing</a>
+        
+      </div>
+      <div class="navbar-nav ms-auto">
+       <form class="d-flex" role="search">
+        <input class="form-control me-2 search-input" type="search" placeholder="Search destinations"/>
+        <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+       </form>
       </div>
 
       <!-- User auth links (right side) -->
       <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="/listings/new">Add your home</a>
         <% if (!currUser) { %>
           <!-- Show Sign up and Log in when user is not logged in -->
-          <a class="nav-link active" href="/signup">Sign Up</a>
-          <a class="nav-link active" href="/login">Log In</a>
+          <a class="nav-link active" href="/signup"><b>Sign Up</b></a>
+          <a class="nav-link active" href="/login"><b>Log In</b></a>
         <% } %>
 
         <% if (currUser) { %>
