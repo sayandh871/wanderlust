@@ -1,4 +1,8 @@
 <% layout("/layouts/boilerplate.ejs") %>
+<script>
+  let mapToken = "<%=process.env.MAP_TOKEN%>"
+  let listing = <%- JSON.stringify(Listing) %>
+</script>
 
 <div class="row">
   <div class="col-8 offset-2 mt-3">
@@ -94,8 +98,9 @@
 
     <!-- All reviews section -->
     <hr>
-    <p><b>All reviews</b></p>
-    <div class="row">
+    <%if(Listing.reviews && Listing.reviews.length >0){%>
+      <div class="row">
+      <p><b>All reviews</b></p>
       <% for (review of Listing.reviews) { %>
         <div class="card col-5 ms-3 mb-3">
           <div class="card-body">
@@ -120,5 +125,14 @@
         </div>
       <% } %>
     </div>
+    <%}%>
+    
   </div>
+  <div class="col-6 offset-3 mb-3 mt-3">where you'll be
+  
+ <div id="map">
+
+ </div>
 </div>
+</div>
+<script src="/js/map.js"></script>

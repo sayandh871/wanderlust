@@ -131,3 +131,8 @@ body {
 .edit-btn{
     background-color: #fe424d !important;
 }
+
+#map { 
+    height: 300px;
+    width: 300px;
+ }
