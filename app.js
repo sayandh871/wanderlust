@@ -28,7 +28,7 @@ let dburl = process.env.ATLASDB_URL;
 const store = MongoStore.create({
   mongoUrl:dburl,
   crypto:{
-    secret:"mysupersecret"
+    secret:process.env.SECRET
   },
   touchAfter: 24*60*60
 
@@ -39,7 +39,7 @@ store.on("error", ()=>{
 // Session configuration options
 const sessionOptions = {
   store,
-  secret: "mysupersecret", // Secret for signing the session ID cookie
+  secret: process.env.SECRET, // Secret for signing the session ID cookie
   resave: false,           // Do not save session if unmodified
   saveUninitialized: true, // Save new sessions even if they are not modified
   cookies: {               // Cookie settings
