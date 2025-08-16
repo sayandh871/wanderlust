@@ -134,6 +134,6 @@ body {
 }
 
 #map { 
-    height: 300px;
-    width: 300px;
+    height: 50vh;
+    width: 80%;
  }

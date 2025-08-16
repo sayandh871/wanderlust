@@ -16,15 +16,29 @@ const reviewRouter = require("./routes/review");
 const userRouter = require("./routes/user");
 const cookieparser = require("cookie-parser");
 const session = require("express-session");
+const MongoStore = require('connect-mongo');;
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 
 
+let dburl = process.env.ATLASDB_URL;
 
+const store = MongoStore.create({
+  mongoUrl:dburl,
+  crypto:{
+    secret:"mysupersecret"
+  },
+  touchAfter: 24*60*60
+
+})
+store.on("error", ()=>{
+  console.log("error in mongoose store:",err);
+})
 // Session configuration options
 const sessionOptions = {
+  store,
   secret: "mysupersecret", // Secret for signing the session ID cookie
   resave: false,           // Do not save session if unmodified
   saveUninitialized: true, // Save new sessions even if they are not modified
@@ -34,11 +48,6 @@ const sessionOptions = {
     httpOnly: true                                // Cookie not accessible via JavaScript
   }
 };
-
-// Root route
-app.get("/", (req, res) => {
-  res.send("root is working");
-});
 
 // Session and flash middleware
 app.use(session(sessionOptions));
@@ -51,8 +60,7 @@ passport.use(new LocalStrategy(User.authenticate())); // Using local strategy
 passport.serializeUser(User.serializeUser());         // Store user in session
 passport.deserializeUser(User.deserializeUser());     // Retrieve user from session
 
-// MongoDB connection URL
-const mongoose_url = "mongodb://127.0.0.1:27017/wanderlust";
+
 
 // Connect to MongoDB
 main()
@@ -64,7 +72,7 @@ main()
   });
 
 async function main() {
-  await mongoose.connect(mongoose_url);
+  await mongoose.connect(dburl);
 }
 
 // Set EJS as view engine with ejs-mate for layouts/partials

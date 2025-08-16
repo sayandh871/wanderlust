@@ -41,7 +41,7 @@ module.exports.destroyReview = async (req, res) => {
     await listing.findByIdAndUpdate(id, { pull: { reviews: reviewId } });
 
     // Delete the review document itself
-    await review.findByIdAndDelete(reviewId);
+    await Review.findByIdAndDelete(reviewId);
 
     // Flash success message and redirect back to the listing
     req.flash("success", "Review Deleted");
